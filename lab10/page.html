@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Submission throttle</title>
+    <script>
+        function init() {
+            key = document.getElementById("key");
+            contentDiv = document.getElementById("content");
+            timer = 0;
+        }
+        function maybeSend() {
+            clearTimeout(timer);
+            timer = setTimeout(send,500);   //0 means early send. (I think)
+        }
+        function send()
+        {
+            query = key.value;
+            xhr = new XMLHttpRequest();
+            xhr.open("GET","server.php?query="+query);
+            xhr.onreadystatechange = populate;
+            xhr.send();
+        }
+        function populate()
+        {
+            if(this.readyState == 4 && this.status == 200)
+            {
+                contentDiv.innerHTML = "";
+                response =  this.responseText;
+                results = response.split(";");
+                if(results.length == 1)
+                {
+                    contentDiv.innerHTML = "No results found "
+                }
+                for(i=1;i<results.length;i++)
+                {
+                    d = document.createElement("div");
+                    d.innerHTML = results[i];
+                    d.onclick = function(event) { key.value = event.target.innerHTML; };   //Set the searchbox to this if clicked
+                    d.style = "border:2px solid black";
+                    contentDiv.appendChild(d);
+                }
+            }
+        }
+
+    </script>
+</head>
+<body onload="init()">
+    Change timeout to 0 for early send(I think) <br>
+    LATE SEND Google Search. Type is Aman is or Kai is to see results. (Case sensitive).
+    <table>
+        <tr><td>
+    <input type="text" id="key" onkeyup="maybeSend()">
+            </tr> </td>
+        <tr><td>
+    <div id="content">
+
+    </div>
+        </tr> </td>
+
+    </table>
+</body>
+</html>

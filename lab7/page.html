@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RSS Search</title>
+    <script>
+        function init()
+        {
+            key = document.getElementById("key");
+            content = document.getElementById("content");
+            xhr = new XMLHttpRequest();
+        }
+        function update() {
+            if(this.readyState == 4 && this.status == 200)
+            {
+                dom = this.responseXML.documentElement;
+                console.log(dom);
+                parseAndPopulate(dom);
+            }
+        }
+        function parseAndPopulate(dom)
+        {
+            channel = dom.getElementsByTagName("channel")[0];
+            items = channel.getElementsByTagName("item");
+            content.innerHTML = "" ;
+            for(i=0;i<items.length;i++)
+            {
+                item = items[i];
+                console.log(items[i]);
+                hd = items[i].getElementsByTagName("title")[0].childNodes[0].nodeValue;
+                lnk = items[i].getElementsByTagName("link")[0].childNodes[0].nodeValue;
+                content.innerHTML += "<a href='" + lnk + "'>" + hd + "</a><br>";
+            }
+        }
+        function search()
+        {
+            xhr.open("GET","server.php?query="+key.value);
+            xhr.onreadystatechange = update;
+            xhr.send();
+            key.value="";
+            //TODO: Set content to empty?
+        }
+    </script>
+</head>
+<body onload="init()">
+    Enter query : <input id="key" type="text"/>
+    <button onclick="search()">Filter</button>
+    <div id="content" style="height:500px;width:500px;border:2px solid black">
+
+    </div>
+</body>
+</html>

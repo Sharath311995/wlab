@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat</title>
+    <script>
+        function init() {
+            username = prompt("Enter your username");
+            sse = new EventSource("server.php?workasphp=True"); //Just so xampp lets download. Not needed
+            sse.onmessage = upde;
+            xhr = new XMLHttpRequest();
+            msg = document.getElementById("msg");
+            content = document.getElementById("content");
+        }
+        function upde(event) {
+            //alert(event.data);
+            msgs = event.data;
+            msgs= msgs.replace(/;/g,"<br>");    //Global replacement. Use the for loop if you don't want
+            /*
+            arr = msgs.split(";");
+            content.innerHTML="";
+            for(var i=0;i<arr.length;i++)
+            {
+                content.innerHTML+=arr[i]+"<br>";
+            }
+            */
+            content.innerHTML = msgs;
+        }
+        function send()
+        {
+            toSend=username+":"+msg.value;
+            xhr.open("GET","recv.php?msg="+toSend);
+            xhr.send();
+            msg.value = "";
+        }
+    </script>
+</head>
+<body onload="init()">
+    <div id="content"  readonly="true" style="border: 2px solid black;height:500px;width=500px"></div> <br><br><br>
+    Enter message :<input  id="msg" type="text">
+    <input type="button" onclick="send()" value="Send"/>
+</body>
+</html>

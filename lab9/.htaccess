@@ -1,0 +1,8 @@
+RewriteEngine on
+RewriteBase /labs/lab9/
+
+RewriteRule ^shortcut/([^/]+)/?$ server.php?username=$1 [L,QSA]
+RewriteRule post/$ server.php [L,QSA]
+RewriteRule get/(.+)$ server.php?filename=$1 [L,QSA]
+RewriteRule put/$ server.php [L,QSA]
+RewriteRule delete/$ server.php [L,QSA]

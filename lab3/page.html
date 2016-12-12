@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MSD</title>
+    <!--
+        Not sure about what he wants.
+    !-->
+    <script>
+        function init()
+        {
+            console.log("fetched page");
+            key = document.getElementById("key");
+            linksDiv = document.getElementById("links");
+            resultsDiv = document.getElementById("results");
+            xhr = new XMLHttpRequest();
+            fetchLinks();
+        }
+        function fetchLinks()
+        {
+            console.log("started fetch links");
+            xhr.open("GET","links.txt");
+            xhr.onreadystatechange = populateLinks;
+            xhr.send();
+        }
+        function populateLinks()
+        {
+            if(this.readyState == 4 && this.status == 200)
+            {
+                content = this.responseText;
+                console.log("fetched links");
+                console.log("started fetch images");
+                im = document.createElement("img");
+                im.src = "1.png";
+                document.body.appendChild(im);
+                //google=www.google.com;bing=www.bing.com
+                lnks = content.split(";");
+                for(i=0;i<lnks.length;i++)
+                {
+                    curr = lnks[i].split("=");
+
+                    var hyperlink = "<a href='"+curr[1]+"' >"+curr[0]+"</a> <br><br>";
+
+                    linksDiv.innerHTML += hyperlink;
+                }
+            }
+        }
+        function fetch()
+        {
+            isbn =key.value;
+            resultsDiv.innerHTML = "";
+            xhr.open("GET","server.php?isbn="+isbn);
+            xhr.onreadystatechange = populateResults;
+            xhr.send();
+        }
+        function populateResults()
+        {
+            if(this.readyState == 4 && this.status == 200)
+            {
+                book = JSON.parse(this.responseText);   //Can keep simple file. But JSON is easier
+                if(book.error == 1)             //book.error will be undefined if it is found
+                {
+                    resultsDiv.innerHTML += "NOT FOUND";
+                    return;
+                }
+                resultsDiv.innerHTML += book.author +"<br>";
+                resultsDiv.innerHTML += book.price  +"<br>";
+                resultsDiv.innerHTML += book.name;
+            }
+        }
+    </script>
+</head>
+<body onload="init()">
+    <input type="text" id="key"/>
+    <button onclick="fetch()">Fetch</button>    Supports ISBNs 1 and 2
+    <div id = "links">
+
+    </div>
+    <div id="results">
+
+    </div>
+</body>
+</html>

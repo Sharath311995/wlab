@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <title>Slideshow</title>
+   <script src="jquery.js"></script>
+    <script>
+        //TODO: Write it nicely
+        $('document').ready(
+                function(){
+                    next = $("#next");
+                    im = $("#im");
+                    prev = $("#prev");
+                    disp = $("#display");
+                    cur = 1;
+                    next.on('click',function () {
+                        if(cur==1)
+                        {
+                            prev.css("visibility","visible");
+                        }
+                        cur+=1;
+                        disp.slideUp("slow",function(){
+                            im.attr('src',cur+'.png');
+                            im.on('load',function(){disp.slideDown("slow");})
+                        });
+                        if(cur==3)
+                        {
+                            next.css("visibility","hidden");
+                        }
+                    });
+                    prev.on('click',function () {
+                        if(cur==3)
+                        {
+                            next.css("visibility","visible");
+                        }
+                        cur-=1;
+                        disp.slideUp("slow",function(){
+                            im.attr('src',cur+'.png');
+                            im.on('load',function(){disp.slideDown("slow");})
+                        });
+                        disp.slideDown("slow");
+                        if(cur==1)
+                        {
+                            prev.css("visibility","hidden");
+                        }
+                    });
+                }
+        );
+    </script>
+</head>
+<body>
+    <div id="display">
+        <img id="im" src="1.png" style="height: 500px;"/>
+    </div>
+    <div>
+    <button id="prev" style="visibility: hidden;">PREV</button>
+    <button id="next" >NEXT</button>
+    </div>
+
+</body>
+</html>

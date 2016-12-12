@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Goods</title>
+    <script>
+        function init()
+        {
+            xhr = new XMLHttpRequest();
+            content = document.getElementById("content");
+            select = document.getElementById("select");
+            xhr.onreadystatechange = maybeUpdate;
+            attempts = 0;
+            xhr.ontimeout = backOff;
+            xhr.timeout = 2000;
+            makeRequest();
+        }
+        function makeRequest()
+        {
+            xhr.open("GET","server.php?param=1");
+            xhr.send();
+            console.log("sending");
+            attempts += 1
+        }
+
+        function maybeUpdate()
+        {
+            if(this.readyState == 4 && this.status == 200)
+            {
+                response = this.responseText;
+                content.innerHTML = response;
+                alert("refreshed");
+                attempts = 0;
+                setTimeout(makeRequest,1000*Math.pow(2,attempts));
+            }
+        }
+        function backOff()
+        {
+            this.abort();
+            alert("failure");
+            setTimeout(makeRequest,1000*Math.pow(2,attempts));
+        }
+        function buy()
+        {
+            buyXhr = new XMLHttpRequest();
+            buyXhr.open("GET","buy.php?name="+select.value);
+            buyXhr.onreadystatechange = function () {
+                response = this.responseText;
+                content.innerHTML = response;
+                console.log("bought");
+            };
+            buyXhr.send();
+        }
+    </script>
+</head>
+<body onload="init()">
+    <div id="content">
+        Please wait. Fetching
+    </div>
+    <select id="select">
+        <option>RADO</option>
+        <option>ROLEX</option>
+        <option>YONEX</option>
+        <option>WILSON</option>
+    </select>
+    <button onclick="buy()">BUY</button>
+</body>
+</html>

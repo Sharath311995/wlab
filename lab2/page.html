@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hidden iframes</title>
+    <script>
+        function init()
+        {
+            ifr = document.getElementById("ifr");
+            nam = document.getElementById("nam");
+            usn = document.getElementById("usn");
+            sem = document.getElementById("semester");
+            gpa = document.getElementById("gpa");
+            error = document.getElementById("error");
+        }
+        
+        function check() {
+            ifr.src = "server.php?usn="+usn.value;
+            console.log("Sent");
+        }
+        function update(code,nameVal,semVal,gpaVal)
+        {
+
+            nam.value = nameVal;
+            sem.value = semVal;
+            gpa.value = gpaVal;
+            error.style.display = "None";
+            if(code==1){
+                error.style.display = "inline";
+
+            }
+        }
+    </script>
+</head>
+<body onload="init()">
+    <iframe id="ifr" style="display:None">
+    </iframe>
+    Supports 1pi13cs070 and 1pi13cs022. Press back in browser after searches to demonstrate the feature he wants
+    <table>
+        <tr>
+            <td>USN</td>
+            <td><input type="text" onblur="check()" id="usn"></td>
+            <td><div id="error" style="display: None">ERROR</div> </td>
+        </tr>
+        <tr>
+            <td>Name</td>
+            <td><input type="text" id="nam" readonly="true"></td>
+        </tr>
+        <tr>
+            <td>Semester</td>
+            <td><input type="text" id="semester" readonly="true"></td>
+        </tr>
+        <tr>
+            <td>GPA</td>
+            <td><input type="text" id="gpa" readonly="true"></td>
+        </tr>
+    </table>
+</body>
+</html>
